@@ -1,82 +1,71 @@
 import Head from 'next/head'
+import { useState } from "react";
+import data from '../data/data'
+import Dropdown from '../components/Dropdown';
+import Input from '../components/Input';
 
-export default function Home() {
+export default function App() {
+  const [crops, setCrops] = useState(0);
+  const [buyPrice, setBuyPrice] = useState(0);
+  const [mats, setMats] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(-1)
+  const [rewardType, setRewardType] = useState(-1)
+
+  const basePrice = selectedItem > -1 && rewardType > -1 ? data[selectedItem][`reward${rewardType + 1}`]?.price : 0
+
+  function calculate() {
+    setMats((crops * buyPrice) / basePrice);
+  }
+
+
+  const dropdownValue = selectedItem > -1 ? data[selectedItem].name : 'Select crop'
+
+  const rewardTypeValue = rewardType > -1 ? rewardType + 1 : 'Select reward type'
+
+  const rewardName = selectedItem > -1 && rewardType > -1 ? data[selectedItem][`reward${rewardType + 1}`]?.name : ''
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div className="App">
       <Head>
-        <title>Create Next App</title>
+        <title>Manor calculator app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <div className="max-w-[1400px] mx-auto py-20">
+        <h1 className="mb-10 text-3xl text-center">Manor calculator</h1>
+        <div className="flex mb-10 -mx-4">
+          <div className="w-1/4 px-4">
+            <div>Seed type</div>
+            <Dropdown data={data} handler={setSelectedItem} value={dropdownValue} />
+          </div>
+          <div className={`w-1/4  px-5 ${selectedItem < 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+            <div>Reward type</div>
+            <Dropdown data={[{ name: '1' }, { name: '2' }]} handler={setRewardType} value={rewardTypeValue} />
+          </div>
+          <div className="w-1/4 px-5">
+            <div>Number of crops</div>
+            <Input
+              handler={setCrops}
+              value={crops || ''}
+              type="number"
+            />
+          </div>
+          <div className="w-1/4 px-5">
+            <div>Castle buy price</div>
+            <Input
+              handler={setBuyPrice}
+              value={buyPrice || ''}
+              type="number"
+            />
+          </div>
         </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+        <div className="flex flex-col items-center">
+          <div className="inline-block px-6 py-3 mb-6 text-center border-2 border-gray-100 rounded cursor-pointer select-none" onClick={calculate}>
+            Calculate
+          </div>
+          <div>{mats ? `${Math.floor(mats)} ${rewardName}` : ''}</div>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
+
