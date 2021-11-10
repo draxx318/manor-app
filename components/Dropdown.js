@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useRef } from 'react'
+import useHide from '../utils/useHide'
+
 
 const Dropdown = ({
     data = [],
     handler = () => { },
     value = ''
 }) => {
-    const [isOpen, setIsOpen] = useState(false)
+    const ref = useRef()
+    const [isOpen, setIsOpen] = useHide(ref)
 
     const dropdownItems = data.map((v, k) => (
         <div key={k} onClick={() => handler(k)} className="px-2 py-2 cursor-pointer select-none">
@@ -14,13 +17,13 @@ const Dropdown = ({
     ))
     return (
         <div>
-            <div onClick={() => setIsOpen(!isOpen)} className="px-2 py-1 bg-gray-100 rounded cursor-pointer select-none">
+            <div ref={ref} onClick={() => setIsOpen(!isOpen)} className="px-2 py-1 bg-gray-100 rounded cursor-pointer select-none">
                 {value}
             </div>
             {
                 isOpen && (
                     <div className="relative">
-                        <div className="absolute top-0 w-full overflow-y-auto bg-white max-h-72">
+                        <div className="absolute top-0 w-full overflow-y-auto bg-gray-100 max-h-72">
                             {dropdownItems}
                         </div>
                     </div>

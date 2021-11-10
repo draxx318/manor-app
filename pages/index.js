@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import data from '../data/data'
 import Dropdown from '../components/Dropdown';
 import Input from '../components/Input';
@@ -11,18 +11,23 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState(-1)
   const [rewardType, setRewardType] = useState(-1)
 
-  const basePrice = selectedItem > -1 && rewardType > -1 ? data[selectedItem][`reward${rewardType + 1}`]?.price : 0
+  useEffect(() => {
+    setMats(0)
+  }, [crops, buyPrice, selectedItem, rewardType])
+
+  const selectedCrop = selectedItem > -1 ? data[selectedItem] : null
+
+  const basePrice = selectedCrop && rewardType > -1 ? selectedCrop.rewards[rewardType].price : 0
 
   function calculate() {
-    setMats((crops * buyPrice) / basePrice);
+    setMats((parseInt(crops, 10) * parseInt(buyPrice, 10)) / basePrice);
   }
-
 
   const dropdownValue = selectedItem > -1 ? data[selectedItem].name : 'Select crop'
 
   const rewardTypeValue = rewardType > -1 ? rewardType + 1 : 'Select reward type'
 
-  const rewardName = selectedItem > -1 && rewardType > -1 ? data[selectedItem][`reward${rewardType + 1}`]?.name : ''
+  const rewardObj = selectedCrop && rewardType > -1 ? selectedCrop.rewards[rewardType] : null
 
   return (
     <div className="App">
@@ -62,7 +67,16 @@ export default function App() {
           <div className="inline-block px-6 py-3 mb-6 text-center border-2 border-gray-100 rounded cursor-pointer select-none" onClick={calculate}>
             Calculate
           </div>
-          <div>{mats ? `${Math.floor(mats)} ${rewardName}` : ''}</div>
+          {
+            !!mats && (
+              <div className="flex items-center">
+                <img src={rewardObj?.image.src} className="w-8 mr-3" />
+                <div>
+                  {`${Math.floor(mats)} ${rewardObj?.name}`}
+                </div>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
