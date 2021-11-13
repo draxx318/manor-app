@@ -35,28 +35,26 @@ export default function App() {
         <title>Manor calculator app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="max-w-[1400px] mx-auto py-20">
+      <div className="max-w-[1400px] px-5 md:px-16 lg:px-20 mx-auto py-20">
         <h1 className="mb-10 text-3xl text-center">Manor calculator</h1>
-        <div className="flex mb-10 -mx-4">
-          <div className="w-1/4 px-4">
-            <div>Seed type</div>
-            <Dropdown data={data} handler={setSelectedItem} value={dropdownValue} />
+        <div className="flex flex-wrap mb-10 -mx-4 lg:flex-nowrap">
+          <div className="w-full px-4 mb-10 lg:w-1/4 lg:mb-0 md:w-1/2">
+            <Dropdown label="Seed type" data={data} handler={setSelectedItem} value={dropdownValue} />
           </div>
-          <div className={`w-1/4  px-5 ${selectedItem < 0 ? 'opacity-50 pointer-events-none' : ''}`}>
-            <div>Reward type</div>
-            <Dropdown data={[{ name: '1' }, { name: '2' }]} handler={setRewardType} value={rewardTypeValue} />
+          <div className={`lg:w-1/4 mb-10 lg:mb-0 md:w-1/2 w-full  px-5 ${selectedItem < 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+            <Dropdown label="Reward type" data={[{ name: '1' }, { name: '2' }]} handler={setRewardType} value={rewardTypeValue} />
           </div>
-          <div className="w-1/4 px-5">
-            <div>Number of crops</div>
+          <div className="w-full px-5 mb-10 md:mb-0 lg:w-1/4 md:w-1/2">
             <Input
+              label="Number of crops"
               handler={setCrops}
               value={crops || ''}
               type="number"
             />
           </div>
-          <div className="w-1/4 px-5">
-            <div>Castle buy price</div>
+          <div className="w-full px-5 mb-10 md:mb-0 lg:w-1/4 md:w-1/2">
             <Input
+              label="Castle buy price"
               handler={setBuyPrice}
               value={buyPrice || ''}
               type="number"

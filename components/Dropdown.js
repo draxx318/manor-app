@@ -1,11 +1,13 @@
 import { useRef } from 'react'
 import useHide from '../utils/useHide'
+import arrow from '../images/arrow.svg'
 
 
 const Dropdown = ({
     data = [],
     handler = () => { },
-    value = ''
+    value = '',
+    label = ''
 }) => {
     const ref = useRef()
     const [isOpen, setIsOpen] = useHide(ref)
@@ -16,9 +18,20 @@ const Dropdown = ({
         </div>
     ))
     return (
-        <div>
-            <div ref={ref} onClick={() => setIsOpen(!isOpen)} className="px-2 py-1 bg-gray-100 rounded cursor-pointer select-none">
-                {value}
+        <div ref={ref}>
+            {
+                label && (
+                    <div className="mb-2">{label}</div>
+                )
+            }
+            <div
+                onClick={() => setIsOpen(!isOpen)}
+                className={`flex items-center justify-between px-2 py-1 bg-gray-100 rounded-t cursor-pointer select-none ${isOpen ? '' : 'rounded-b'}`}
+            >
+                <div>
+                    {value}
+                </div>
+                <img src={arrow.src} alt="Arrow" className={`w-3 h-3 transform transition-transform ${isOpen ? '' : 'rotate-180'}`} />
             </div>
             {
                 isOpen && (
